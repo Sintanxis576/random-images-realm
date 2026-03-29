@@ -10,10 +10,6 @@
       text-align: center;
     }
 
-    h1 {
-      margin: 20px;
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -29,7 +25,7 @@
     }
 
     img {
-      width: 100%;
+      max-width: 100%;
       border-radius: 5px;
     }
 
@@ -37,21 +33,34 @@
       margin-top: 10px;
       padding: 5px 10px;
       cursor: pointer;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
 
-    .top {
-      border: 2px solid gold;
+    button img {
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
 
-<h1>🌌 RANDOM IMAGES REALM</h1>
+<!-- 🌌 LOGO -->
+<img src="Logo.png" style="max-width:400px; margin-top:20px;">
 
-<h2>🏆 THE WEEKLY TOP</h2>
+<!-- 🏆 WEEKLY TOP -->
+<h2>
+  <img src="trophy.png" width="25" style="vertical-align:middle;">
+  THE WEEKLY TOP
+</h2>
+
 <div id="top"></div>
 
-<h2>🖼️ GALLERY</h2>
+<!-- 🖼️ GALLERY TITLE -->
+<img src="gallery.png" style="max-width:400px; margin-top:20px;">
+
+<!-- 🖼️ GALERÍA -->
 <div class="grid" id="gallery"></div>
 
 <script>
@@ -85,7 +94,7 @@
       image.src = img;
 
       let btn = document.createElement("button");
-      btn.innerText = "❤️ " + data[img].likes;
+      btn.innerHTML = `<img src="like-icon.png" width="20"> ${data[img].likes}`;
 
       btn.onclick = () => {
         data[img].likes++;
@@ -94,7 +103,10 @@
       };
 
       let info = document.createElement("p");
-      info.innerText = "🔥 " + data[img].streak + " streak | 🏆 " + data[img].wins + " wins";
+      info.innerHTML = `
+        <img src="streak-icon.png" width="16"> ${data[img].streak} streak |
+        <img src="trophy.png" width="16"> ${data[img].wins} wins
+      `;
 
       card.appendChild(image);
       card.appendChild(btn);
@@ -112,7 +124,11 @@
 
     sorted.slice(0, 10).forEach(([img, stats], i) => {
       let el = document.createElement("p");
-      el.innerText = `${i+1}. ${img} ❤️${stats.likes} 🔥${stats.streak}`;
+      el.innerHTML = `
+        ${i+1}. ${img}
+        <img src="like-icon.png" width="14"> ${stats.likes}
+        <img src="streak-icon.png" width="14"> ${stats.streak}
+      `;
       topDiv.appendChild(el);
     });
   }
@@ -143,11 +159,6 @@
   }
 
   render();
-
-  // ⚠️ Para probar:
-  // escribe esto en consola:
-  // newWeek()
-
 </script>
 
 </body>
