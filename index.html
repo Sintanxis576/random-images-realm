@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random Images Realm</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border: 2px solid #333;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .top {
+      border: 2px solid gold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌌 RANDOM IMAGES REALM</h1>
+
+<h2>🏆 THE WEEKLY TOP</h2>
+<div id="top"></div>
+
+<h2>🖼️ GALLERY</h2>
+<div class="grid" id="gallery"></div>
+
+<script>
+  let images = [
+    "imagen1.png",
+    "imagen2.png",
+    "imagen3.png"
+  ];
+
+  let data = JSON.parse(localStorage.getItem("realmData")) || {};
+
+  images.forEach(img => {
+    if (!data[img]) {
+      data[img] = { likes: 0, wins: 0, streak: 0 };
+    }
+  });
+
+  function save() {
+    localStorage.setItem("realmData", JSON.stringify(data));
+  }
+
+  function createGallery() {
+    let gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
+
+    images.forEach(img => {
+      let card = document.createElement("div");
+      card.className = "card";
+
+      let image = document.createElement("img");
+      image.src = img;
+
+      let btn = document.createElement("button");
+      btn.innerText = "❤️ " + data[img].likes;
+
+      btn.onclick = () => {
+        data[img].likes++;
+        save();
+        render();
+      };
+
+      let info = document.createElement("p");
+      info.innerText = "🔥 " + data[img].streak + " streak | 🏆 " + data[img].wins + " wins";
+
+      card.appendChild(image);
+      card.appendChild(btn);
+      card.appendChild(info);
+      gallery.appendChild(card);
+    });
+  }
+
+  function updateTop() {
+    let sorted = Object.entries(data)
+      .sort((a, b) => b[1].likes - a[1].likes);
+
+    let topDiv = document.getElementById("top");
+    topDiv.innerHTML = "";
+
+    sorted.slice(0, 10).forEach(([img, stats], i) => {
+      let el = document.createElement("p");
+      el.innerText = `${i+1}. ${img} ❤️${stats.likes} 🔥${stats.streak}`;
+      topDiv.appendChild(el);
+    });
+  }
+
+  function newWeek() {
+    let sorted = Object.entries(data)
+      .sort((a, b) => b[1].likes - a[1].likes);
+
+    let winner = sorted[0][0];
+
+    for (let img in data) {
+      if (img === winner) {
+        data[img].wins++;
+        data[img].streak++;
+      } else {
+        data[img].streak = 0;
+      }
+      data[img].likes = 0;
+    }
+
+    save();
+    render();
+  }
+
+  function render() {
+    createGallery();
+    updateTop();
+  }
+
+  render();
+
+  // ⚠️ Para probar:
+  // escribe esto en consola:
+  // newWeek()
+
+</script>
+
+</body>
+</html>
